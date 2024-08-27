@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  calculator-api:
+    build: .
+    container_name: calculator-api
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    command: bash -c "npm install && npm run dev"
+    environment:
+      NODE_ENV: development
