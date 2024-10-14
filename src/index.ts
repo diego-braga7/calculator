@@ -1,42 +1,67 @@
-import express, { Request, Response } from 'express';
-import { sum } from './sum';
-import { subtract } from './subtract';
-import { multiply } from './multiply';
-import { divide } from './divide';
+import express, { Request, Response } from "express";
+import { Sum } from "./operation/sum";
+import { Subtract } from "./operation/subtract";
+import { FactoryOperation } from "./factory-operation";
+import { BaseOperation } from "./operation/base-operation";
+import { Multiply } from "./operation/multiply";
+import { Divide } from "./operation/divide";
 
 const app = express();
 const port = 3000;
 
-// Middleware para parsear JSON
 app.use(express.json());
 
-// Rota para adição
-app.post('/add', (req: Request, res: Response) => {
-    const { num1, num2 } = req.body;
-    const result = sum(num1, num2);
-    res.json({ result });
+app.post("/add", (req: Request, res: Response) => {
+
+    const toolCalls: string[] | undefined = req.body.message.toolCalls;
+
+    if (toolCalls === undefined || !toolCalls) {
+        return;
+    }
+    const operation = new Sum();
+
+    res.json(prepareForFactoryOperation(operation, toolCalls));
 });
 
-// Rota para subtração
-app.post('/subtract', (req: Request, res: Response) => {
-    const { num1, num2 } = req.body;
-    const result = subtract(num1, num2);
-    res.json({ result });
+
+
+app.post("/subtract", (req: Request, res: Response) => {
+    const toolCalls: string[] | undefined = req.body.message.toolCalls;
+
+    if (toolCalls === undefined || !toolCalls) {
+        return;
+    }
+    const operation = new Subtract();
+
+    res.json(prepareForFactoryOperation(operation, toolCalls));
 });
 
-// Rota para multiplicação
-app.post('/multiply', (req: Request, res: Response) => {
-    const { num1, num2 } = req.body;
-    const result = multiply(num1, num2);
-    res.json({ result });
+app.post("/multiply", (req: Request, res: Response) => {
+    const toolCalls: string[] | undefined = req.body.message.toolCalls;
+
+    if (toolCalls === undefined || !toolCalls) {
+        return;
+    }
+    const operation = new Multiply();
+
+    res.json(prepareForFactoryOperation(operation, toolCalls));
 });
 
-// Rota para divisão
-app.post('/divide', (req: Request, res: Response) => {
-    const { num1, num2 } = req.body;
-    const result = divide(num1, num2);
-    res.json({ result });
+app.post("/divide", (req: Request, res: Response) => {
+    const toolCalls: string[] | undefined = req.body.message.toolCalls;
+
+    if (toolCalls === undefined || !toolCalls) {
+        return;
+    }
+    const operation = new Divide();
+
+    res.json(prepareForFactoryOperation(operation, toolCalls));
 });
+
+function prepareForFactoryOperation(operation: BaseOperation, toolCalls: string[]) {
+    const factoryOperation = new FactoryOperation(operation);
+    return factoryOperation.handle(toolCalls);;
+}
 
 app.listen(port, () => {
     console.log(`Calculator API listening at http://localhost:${port}`);
