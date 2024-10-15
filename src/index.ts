@@ -14,55 +14,22 @@ const port = 3000;
 app.use(express.json());
 app.use('/auth', authRoutes);
 
-app.post("/add", authMiddleware,(req: Request, res: Response) => {
+app.post("/", authMiddleware,(req: Request, res: Response) => {
 
     const toolCalls: string[] | undefined = req.body.message.toolCalls;
 
     if (toolCalls === undefined || !toolCalls) {
         return;
     }
-    const operation = new Sum();
 
-    res.json(prepareForFactoryOperation(operation, toolCalls));
+    res.json(prepareForFactoryOperation(toolCalls));
 });
 
 
 
-app.post("/subtract", authMiddleware, (req: Request, res: Response) => {
-    const toolCalls: string[] | undefined = req.body.message.toolCalls;
+function prepareForFactoryOperation(toolCalls: string[]) {
 
-    if (toolCalls === undefined || !toolCalls) {
-        return;
-    }
-    const operation = new Subtract();
-
-    res.json(prepareForFactoryOperation(operation, toolCalls));
-});
-
-app.post("/multiply", authMiddleware, (req: Request, res: Response) => {
-    const toolCalls: string[] | undefined = req.body.message.toolCalls;
-
-    if (toolCalls === undefined || !toolCalls) {
-        return;
-    }
-    const operation = new Multiply();
-
-    res.json(prepareForFactoryOperation(operation, toolCalls));
-});
-
-app.post("/divide", authMiddleware, (req: Request, res: Response) => {
-    const toolCalls: string[] | undefined = req.body.message.toolCalls;
-
-    if (toolCalls === undefined || !toolCalls) {
-        return;
-    }
-    const operation = new Divide();
-
-    res.json(prepareForFactoryOperation(operation, toolCalls));
-});
-
-function prepareForFactoryOperation(operation: BaseOperation, toolCalls: string[]) {
-    const factoryOperation = new FactoryOperation(operation);
+    const factoryOperation = new FactoryOperation();
     return factoryOperation.handle(toolCalls);;
 }
 

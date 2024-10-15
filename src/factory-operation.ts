@@ -1,8 +1,12 @@
 import { BaseOperation } from "./operation/base-operation";
+import { Divide } from "./operation/divide";
+import { Multiply } from "./operation/multiply";
+import { Subtract } from "./operation/subtract";
+import { Sum } from "./operation/sum";
 
 export class FactoryOperation {
 
-    constructor(private operation: BaseOperation) {
+    constructor() {
 
      }
 
@@ -12,8 +16,10 @@ export class FactoryOperation {
             let argumets = toolCall.function.arguments;
             let num1 = argumets.num1;
             let num2 = argumets.num2;
+            let textOperation = argumets.operation;
 
-            const result = this.operation.execute(num1, num2);
+            const operation = this.getOperation(textOperation);
+            const result = operation.execute(num1, num2);
             const resultObject = [
                 {
                     toolCallId: id,
@@ -29,4 +35,19 @@ export class FactoryOperation {
 
         return finalResponse[0];
      }
+
+     private getOperation(operation: string) {
+        switch (operation) {
+            case "sum":
+                return new Sum();
+            case "subtract":
+                return new Subtract();
+            case "multiply":
+                return new Multiply();
+            case "divide":
+                return new Divide();
+            default:
+                return new Sum();
+        }	
+    }
 }
