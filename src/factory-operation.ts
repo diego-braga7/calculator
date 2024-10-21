@@ -1,6 +1,7 @@
 import { BaseOperation } from "./operation/base-operation";
 import { Divide } from "./operation/divide";
 import { Multiply } from "./operation/multiply";
+import { Percentage } from "./operation/percentege";
 import { Subtract } from "./operation/subtract";
 import { Sum } from "./operation/sum";
 
@@ -46,6 +47,8 @@ export class FactoryOperation {
                 return new Multiply();
             case "divide":
                 return new Divide();
+            case "percentage":
+                return new Percentage();    
             default:
                 return new Sum();
         }	
